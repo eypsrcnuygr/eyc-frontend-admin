@@ -44,6 +44,7 @@ const Items = props=> {
     details : "",
     value: 0,
 })
+  const [myDiv, setMyDiv] = useState(null);
 
   let ItemList = null;
   let isCancelled = false;
@@ -132,6 +133,13 @@ const Items = props=> {
         'access-token': JSON.parse(localStorage.getItem('myAdmin')).myAccessToken,
       },
     })
+    .then((response) => {
+      console.log(response);
+      if (response.status === 201) {
+        setMyDiv('Yükleme Başarılı');
+        setTimeout(() => { setMyDiv(null); }, 2000);
+      }
+    })
       .then(() => {
         checkLoginStatus();
       })
@@ -155,14 +163,17 @@ const Items = props=> {
   }
 
   return (
-    <div>
+    <div className="text-center">
       {props.email}
-      <input className="form-control" onChange={(event) => onInputChange(event)} value={state.name} name="name" type="text" placeholder="Ürünün Adı" />
-      <input className="form-control" onChange={(event) => onInputChange(event)} value={state.details} name="details" type="text" placeholder="Ürünün Detayları" />
-      <input className="form-control" onChange={(event) => onInputChange(event)} value={state.value} name="value" type="Number" placeholder="Ürünün Fiyatı" />
+      <div>
+      <b>{myDiv}</b>
+      </div>
+      <input className="form-control w-50 mx-auto my-2" onChange={(event) => onInputChange(event)} value={state.name} name="name" type="text" placeholder="Ürünün Adı" />
+      <input className="form-control w-50 mx-auto my-2" onChange={(event) => onInputChange(event)} value={state.details} name="details" type="text" placeholder="Ürünün Detayları" />
+      <input className="form-control w-50 mx-auto my-2" onChange={(event) => onInputChange(event)} value={state.value} name="value" type="Number" placeholder="Ürünün Fiyatı" />
       <Widget publicKey={process.env.REACT_APP_PUBLIC_API_KEY} id='file' role="uploadcare-uploader" onChange={event => onImageUpload(event)} />
-      <button type="button" className="btn btn-success my-3 w-25 mx-auto" onClick={sendItemToAPI}>Upload</button>
-      <button type="button" className="button btn-danger" onClick={handleLogOut}>Çıkış</button>
+      <button type="button" className="btn btn-success my-3 w-25 mx-auto" onClick={sendItemToAPI}>Yükle</button>
+      <button type="button" className="button btn btn-danger" onClick={handleLogOut}>Çıkış</button>
     </div>
   );
 };

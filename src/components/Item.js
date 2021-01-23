@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
+import { Widget } from "@uploadcare/react-widget";
 import { useEffect, useState } from "react";
 import { logoutAdmin, loginAdmin } from "../actions/index";
 import { connect } from "react-redux";
-import { Widget } from '@uploadcare/react-widget';
 import { Link } from 'react-router-dom';
 
 const mapStateToProps = (state) => {
@@ -34,7 +34,7 @@ const mapDispatchToProps = (dispatch) => ({
   logoutAdminFromComponent: (admin) => dispatch(logoutAdmin(admin)),
 });
 
-const Items = (props) => {
+const Item = (props) => {
   const [photo, setImage] = useState(null);
   const [state, setState] = useState({
     name: "",
@@ -42,8 +42,7 @@ const Items = (props) => {
     value: 0,
   });
   const [myDiv, setMyDiv] = useState(null);
-  const [ItemList, setItemList] = useState([]);
-
+  const [Item, setItem] = useState([]);
   let responseVar = null;
 
   const checkLoginStatus = () => {
@@ -71,9 +70,9 @@ const Items = (props) => {
       });
   };
 
-  const getItems = () => {
+  const getItem = () => {
     axios
-      .get("http://localhost:3001/items", {
+      .get(`http://localhost:3001/items/${props.match.params.id}`, {
         headers: {
           uid: JSON.parse(localStorage.getItem("myAdmin")).myUid,
           client: JSON.parse(localStorage.getItem("myAdmin")).myClient,
@@ -83,15 +82,19 @@ const Items = (props) => {
       })
       .then((response) => {
         if (response.status === 200) {
-          setItemList(response.data);
+          setItem(response.data);
         }
       });
   };
 
   useEffect(() => {
-      getItems();
-      checkLoginStatus();
+    getItem();
+    checkLoginStatus();
   }, []);
+
+  const onImageUpload = (event) => {
+    setImage(event.originalUrl);
+  };
 
   const handleLogOut = () => {
     axios
@@ -115,8 +118,8 @@ const Items = (props) => {
 
   const sendItemToAPI = () => {
     axios
-      .post(
-        "http://localhost:3001/items",
+      .patch(
+        `http://localhost:3001/items/${props.match.params.id}`,
         {
           item: {
             image: photo,
@@ -135,8 +138,9 @@ const Items = (props) => {
         }
       )
       .then((response) => {
-        if (response.status === 201) {
+        if (response.status === 200) {
           setMyDiv("Yükleme Başarılı");
+          getItem();
           setTimeout(() => {
             setMyDiv(null);
           }, 2000);
@@ -153,10 +157,6 @@ const Items = (props) => {
       });
   };
 
-  const onImageUpload = (event) => {
-    setImage(event.originalUrl);
-  };
-
   const onInputChange = (event) => {
     const { name, value } = event.target;
     setState((prevState) => ({
@@ -164,10 +164,9 @@ const Items = (props) => {
       [name]: value,
     }));
   };
-
   return (
     <div className="text-center">
-      <h1>Ürün Ekle</h1>
+      <h1>Ürünü değiştir</h1>
       <div>
         <b>{myDiv}</b>
       </div>
@@ -209,23 +208,26 @@ const Items = (props) => {
       >
         Yükle
       </button>
-      <div>
-        <h3>Yüklü Ürünler</h3>
-        {ItemList.map((element) => {
-          return (
-            <div key={element.id} className="card w-50 mx-auto shadow-lg my-3 py-3">
-              <div className="w-50 mx-auto">
-              <Link to={`items/${element.id}`}><img src={element.image} alt="item" className="card-img-top img-fluid" /></Link>
-              </div>
-              <div className="card-body">
-                <div>{element.name}</div>
-              <div>{element.details}</div>
-              <div>{element.value}</div>
-              </div>
-              
-            </div>
-          );
-        })}
+      <div className="card w-50 mx-auto p-4 shadow-lg mb-4">
+      <div className="w-75 mx-auto">
+        <img src={Item.image} alt="specific-item" className="img-fluid" />
+      </div>
+      <div>{Item.name}</div>
+      <div>{Item.details}</div>
+      <div>{Item.value}</div>
+      </div>
+      
+      
+      <div className="mb-3">
+        <Link to="/logged_in">
+        <button
+          type="button"
+          className="button btn btn-primary"
+        >
+          Admin Panele Dön
+        </button>
+        </Link>
+        
       </div>
       <div className="mb-3">
         <button
@@ -240,4 +242,4 @@ const Items = (props) => {
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Items);
+export default connect(mapStateToProps, mapDispatchToProps)(Item);

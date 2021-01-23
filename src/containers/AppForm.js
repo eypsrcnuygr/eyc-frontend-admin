@@ -150,7 +150,7 @@ const AppForm = props => {
           required
           className="form-control mb-2"
         />
-        <button type="button" className="btn btn-success mt-3" id="myButtonForTest" onClick={handleSubmit}>Sign Up</button>
+        <button type="button" className="btn btn-success mt-3" id="myButtonForTest" onClick={handleSubmit}>Üye Ol</button>
       </form>
 
       <form className="text-center mb-3 w-50 mx-auto">
@@ -174,7 +174,7 @@ const AppForm = props => {
           required
           className="form-control mb-2"
         />
-        <button type="button" className="btn btn-primary mt-3" data-testid="custom-element3" onClick={handleSubmitForLogin}>Sign In</button>
+        <button type="button" className="btn btn-primary mt-3" data-testid="custom-element3" onClick={handleSubmitForLogin}>Giriş Yap</button>
       </form>
       {hasError ? <div>{errorMessage}</div> : null}
     </div>

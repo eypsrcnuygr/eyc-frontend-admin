@@ -42,6 +42,7 @@ const Items = (props) => {
     details: "",
     value: 0,
     group: "Müslin",
+    banner_status: false,
   });
   const [myDiv, setMyDiv] = useState(null);
   const [ItemList, setItemList] = useState([]);
@@ -127,6 +128,7 @@ const Items = (props) => {
             value: state.value,
             name: state.name,
             group: state.group,
+            banner_status: state.banner_status
           },
         },
         {
@@ -163,7 +165,8 @@ const Items = (props) => {
   };
 
   const onInputChange = (event) => {
-    const { name, value } = event.target;
+    const { name} = event.target;
+    const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     setState((prevState) => ({
       ...prevState,
       [name]: value,
@@ -173,6 +176,20 @@ const Items = (props) => {
   const handleChange = (event) => {
     setNavState(event.target.value);
   };
+
+  const handleDelete = (id) => {
+    axios
+      .delete(`http://localhost:3001/items/${id}`, {
+        headers: {
+          uid: JSON.parse(localStorage.getItem("myAdmin")).myUid,
+          client: JSON.parse(localStorage.getItem("myAdmin")).myClient,
+          "access-token": JSON.parse(localStorage.getItem("myAdmin"))
+            .myAccessToken,
+        },
+      })
+      .then(() => getItems())
+      .catch(error => console.log(error));
+  }
 
   return (
     <div className="text-center">
@@ -218,6 +235,7 @@ const Items = (props) => {
         onChange={(event) => onImageUpload(event)}
         locale="tr"
       />
+       <input type="checkbox" className="form-control mt-3" name="banner_status" onChange={(event) => onInputChange(event)} />
       <button
         type="button"
         className="btn btn-success my-3 w-25 mx-auto"
@@ -249,6 +267,7 @@ const Items = (props) => {
                   <div>{element.value}</div>
                   <div>{element.group}</div>
                 </div>
+                <button type="button" className="btn btn-danger w-50 mx-auto" onClick={() => handleDelete(element.id)}>Ürünü Sil</button>
               </div>
             );
           }

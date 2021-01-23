@@ -3,9 +3,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { logoutAdmin, loginAdmin } from "../actions/index";
 import { connect } from "react-redux";
-import { Widget } from '@uploadcare/react-widget';
-import { Link } from 'react-router-dom';
-import NavBar from './NavBar';
+import { Widget } from "@uploadcare/react-widget";
+import { Link } from "react-router-dom";
+import NavBar from "./NavBar";
 
 const mapStateToProps = (state) => {
   const {
@@ -41,10 +41,11 @@ const Items = (props) => {
     name: "",
     details: "",
     value: 0,
+    group: "Müslin",
   });
   const [myDiv, setMyDiv] = useState(null);
   const [ItemList, setItemList] = useState([]);
-  const [navState, setNavState] = useState('')
+  const [navState, setNavState] = useState("");
 
   let responseVar = null;
 
@@ -91,8 +92,8 @@ const Items = (props) => {
   };
 
   useEffect(() => {
-      getItems();
-      checkLoginStatus();
+    getItems();
+    checkLoginStatus();
   }, []);
 
   const handleLogOut = () => {
@@ -125,6 +126,7 @@ const Items = (props) => {
             details: state.details,
             value: state.value,
             name: state.name,
+            group: state.group,
           },
         },
         {
@@ -170,12 +172,12 @@ const Items = (props) => {
 
   const handleChange = (event) => {
     setNavState(event.target.value);
-  }
+  };
 
   return (
     <div className="text-center">
       <h1>Ürün Ekle</h1>
-      <NavBar handleChange={handleChange} value={navState}/>
+      <NavBar handleChange={handleChange} value={navState} />
       <div>
         <b>{myDiv}</b>
       </div>
@@ -203,6 +205,12 @@ const Items = (props) => {
         type="Number"
         placeholder="Ürünün Fiyatı"
       />
+      <select name="group" id="group" className="form-control w-50 mx-auto" onChange={(event) => onInputChange(event)}>
+        <option value="Müslin">Müslin</option>
+        <option value="Patik">Patik</option>
+        <option value="Battaniye">Battaniye</option>
+        <option value="Kundak">Kundak</option>
+      </select>
       <Widget
         publicKey={process.env.REACT_APP_PUBLIC_API_KEY}
         id="file"
@@ -219,23 +227,32 @@ const Items = (props) => {
       </button>
       <div>
         <h3>Yüklü Ürünler</h3>
-        {ItemList.filter(myItem=> (
-          myItem.name.indexOf(navState) !== -1
-        )).map((element) => {
-          return (
-            <div key={element.id} className="card w-50 mx-auto shadow-lg my-3 py-3">
-              <div className="w-50 mx-auto">
-              <Link to={`items/${element.id}`}><img src={element.image} alt="item" className="card-img-top img-fluid" /></Link>
+        {ItemList.filter((myItem) => myItem.name.indexOf(navState) !== -1).map(
+          (element) => {
+            return (
+              <div
+                key={element.id}
+                className="card w-50 mx-auto shadow-lg my-3 py-3"
+              >
+                <div className="w-50 mx-auto">
+                  <Link to={`items/${element.id}`}>
+                    <img
+                      src={element.image}
+                      alt="item"
+                      className="card-img-top img-fluid"
+                    />
+                  </Link>
+                </div>
+                <div className="card-body">
+                  <div>{element.name}</div>
+                  <div>{element.details}</div>
+                  <div>{element.value}</div>
+                  <div>{element.group}</div>
+                </div>
               </div>
-              <div className="card-body">
-                <div>{element.name}</div>
-              <div>{element.details}</div>
-              <div>{element.value}</div>
-              </div>
-              
-            </div>
-          );
-        })}
+            );
+          }
+        )}
       </div>
       <div className="mb-3">
         <button

@@ -40,6 +40,7 @@ const Item = (props) => {
     name: "",
     details: "",
     value: 0,
+    group: 'Müslin',
   });
   const [myDiv, setMyDiv] = useState(null);
   const [Item, setItem] = useState([]);
@@ -126,6 +127,7 @@ const Item = (props) => {
             details: state.details,
             value: state.value,
             name: state.name,
+            group: state.group
           },
         },
         {
@@ -194,6 +196,12 @@ const Item = (props) => {
         type="Number"
         placeholder="Ürünün Fiyatı"
       />
+      <select name="group" id="group" className="form-control w-50 mx-auto" onChange={(event) => onInputChange(event)}>
+        <option value="Müslin">Müslin</option>
+        <option value="Patik">Patik</option>
+        <option value="Battaniye">Battaniye</option>
+        <option value="Kundak">Kundak</option>
+      </select>
       <Widget
         publicKey={process.env.REACT_APP_PUBLIC_API_KEY}
         id="file"
@@ -215,6 +223,7 @@ const Item = (props) => {
       <div>{Item.name}</div>
       <div>{Item.details}</div>
       <div>{Item.value}</div>
+      <div>{Item.group}</div>
       </div>
       
       

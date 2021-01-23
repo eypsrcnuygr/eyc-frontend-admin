@@ -5,6 +5,7 @@ import { logoutAdmin, loginAdmin } from "../actions/index";
 import { connect } from "react-redux";
 import { Widget } from '@uploadcare/react-widget';
 import { Link } from 'react-router-dom';
+import NavBar from './NavBar';
 
 const mapStateToProps = (state) => {
   const {
@@ -43,6 +44,7 @@ const Items = (props) => {
   });
   const [myDiv, setMyDiv] = useState(null);
   const [ItemList, setItemList] = useState([]);
+  const [navState, setNavState] = useState('')
 
   let responseVar = null;
 
@@ -144,6 +146,7 @@ const Items = (props) => {
       })
       .then(() => {
         checkLoginStatus();
+        getItems();
       })
       .catch((error) => {
         responseVar = error.response.statusText;
@@ -165,9 +168,14 @@ const Items = (props) => {
     }));
   };
 
+  const handleChange = (event) => {
+    setNavState(event.target.value);
+  }
+
   return (
     <div className="text-center">
       <h1>Ürün Ekle</h1>
+      <NavBar handleChange={handleChange} value={navState}/>
       <div>
         <b>{myDiv}</b>
       </div>
@@ -211,7 +219,9 @@ const Items = (props) => {
       </button>
       <div>
         <h3>Yüklü Ürünler</h3>
-        {ItemList.map((element) => {
+        {ItemList.filter(myItem=> (
+          myItem.name.indexOf(navState) !== -1
+        )).map((element) => {
           return (
             <div key={element.id} className="card w-50 mx-auto shadow-lg my-3 py-3">
               <div className="w-50 mx-auto">

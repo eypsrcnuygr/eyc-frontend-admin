@@ -89,9 +89,9 @@ const AppForm = props => {
       password: passwordForLogin,
     }, {
       headers: {
-        uid: JSON.parse(localStorage.getItem('currentUser')).myUid,
-        client: JSON.parse(localStorage.getItem('currentUser')).myClient,
-        access_token: JSON.parse(localStorage.getItem('currentUser')).myAccessToken,
+        uid: JSON.parse(localStorage.getItem('myAdmin')).myUid,
+        client: JSON.parse(localStorage.getItem('myAdmin')).myClient,
+        access_token: JSON.parse(localStorage.getItem('myAdmin')).myAccessToken,
       },
     }).then(response => {
       if (response.status === 200) {

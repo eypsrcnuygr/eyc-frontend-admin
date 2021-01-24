@@ -37,7 +37,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 const Items = (props) => {
   const [photo, setImage] = useState(null);
-  const [state, setState] = useState({
+  const [state, setStateFor] = useState({
     name: "",
     details: "",
     value: 0,
@@ -167,7 +167,7 @@ const Items = (props) => {
   const onInputChange = (event) => {
     const { name} = event.target;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    setState((prevState) => ({
+    setStateFor((prevState) => ({
       ...prevState,
       [name]: value,
     }));

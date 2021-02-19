@@ -223,10 +223,13 @@ const Items = (props) => {
         placeholder="Ürünün Fiyatı"
       />
       <select name="group" id="group" className="form-control w-50 mx-auto" onChange={(event) => onInputChange(event)}>
-        <option value="Müslin">Müslin</option>
-        <option value="Patik">Patik</option>
-        <option value="Battaniye">Battaniye</option>
-        <option value="Kundak">Kundak</option>
+        <option value="Organik Müslin Örtüler">Organik Müslin Örtüler</option>
+        <option value="Çift Taraflı Pikeler">Çift Taraflı Pikeler</option>
+        <option value="Örgü Kumaş Pikeler">Örgü Kumaş Pikeler</option>
+        <option value="Müslin Keseler">Müslin Keseler</option>
+        <option value="Triko Battaniyeler">Triko Battaniyeler</option>
+        <option value="Müslin Mendil ve Boyunluk">Müslin Mendil ve Boyunluk</option>
+        <option value="İşlevsel Puset Örtüsü">İşlevsel Puset Örtüsü</option>
       </select>
       <Widget
         publicKey={process.env.REACT_APP_PUBLIC_API_KEY}

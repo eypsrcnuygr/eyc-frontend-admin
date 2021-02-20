@@ -41,7 +41,7 @@ const Items = (props) => {
     name: "",
     details: "",
     value: 0,
-    group: "Müslin",
+    group: "Organik Müslin Örtüler",
     banner_status: false,
   });
   const [myDiv, setMyDiv] = useState(null);
@@ -190,6 +190,8 @@ const Items = (props) => {
       .then(() => getItems())
       .catch(error => console.log(error));
   }
+
+  console.log(state.group);
 
   return (
     <div className="text-center">

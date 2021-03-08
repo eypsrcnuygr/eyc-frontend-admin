@@ -52,7 +52,7 @@ const Items = (props) => {
 
   const checkLoginStatus = () => {
     axios
-      .get("https://eyc-api.herokuapp.com/v1/auth/validate_token", {
+      .get("http://localhost:3001/v1/auth/validate_token", {
         headers: {
           uid: JSON.parse(localStorage.getItem("myAdmin")).myUid,
           client: JSON.parse(localStorage.getItem("myAdmin")).myClient,
@@ -77,7 +77,7 @@ const Items = (props) => {
 
   const getItems = () => {
     axios
-      .get("https://eyc-api.herokuapp.com/items", {
+      .get("http://localhost:3001/items", {
         headers: {
           uid: JSON.parse(localStorage.getItem("myAdmin")).myUid,
           client: JSON.parse(localStorage.getItem("myAdmin")).myClient,
@@ -99,7 +99,7 @@ const Items = (props) => {
 
   const handleLogOut = () => {
     axios
-      .delete("https://eyc-api.herokuapp.com/v1/auth/sign_out", {
+      .delete("http://localhost:3001/v1/auth/sign_out", {
         headers: {
           uid: JSON.parse(localStorage.getItem("myAdmin")).myUid,
           client: JSON.parse(localStorage.getItem("myAdmin")).myClient,
@@ -120,7 +120,7 @@ const Items = (props) => {
   const sendItemToAPI = () => {
     axios
       .post(
-        "https://eyc-api.herokuapp.com/items",
+        "http://localhost:3001/items",
         {
           item: {
             image: photo,
@@ -179,7 +179,7 @@ const Items = (props) => {
 
   const handleDelete = (id) => {
     axios
-      .delete(`https://eyc-api.herokuapp.com/items/${id}`, {
+      .delete(`http://localhost:3001/items/${id}`, {
         headers: {
           uid: JSON.parse(localStorage.getItem("myAdmin")).myUid,
           client: JSON.parse(localStorage.getItem("myAdmin")).myClient,

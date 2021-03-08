@@ -9,8 +9,7 @@ This is an ongoing project which is an e-commerce app for baby products. This re
 - Javascript
 - React
 - Redux
-- Eslint
-- Stylelint
+- Bootstrap
 - Yarn
 
 ## Prerequisities
@@ -19,7 +18,7 @@ To get this project up and running locally, you must have node installed on your
 
 ## Live Link
 
-- Coming!
+- here is the [live link](https://eyc-baby-admin.herokuapp.com/).
 
 ## Getting Started
 
@@ -34,9 +33,10 @@ To get this project up and running locally, you must have node installed on your
 - It uses [this](https://github.com/eypsrcnuygr/EYC_API) repo as API. To run your backend server please refer the given link.
 - Enjoy!<br>
 
-**Repository Content**
+**App Features**
 
-- Coming!
+- You can't register anymore, even you have the sign-up form. It is blocked from the API layer for protection.
+- If you have an account, you can sign in and change the content of the main [page](https://www.eycbaby.com.tr/).
 
 ## Authors
 
@@ -55,11 +55,6 @@ Contributions, issues and feature requests are welcome!
 ## Show your support
 
 Give a ⭐️ if you like this project!
-
-## Acknowledgments
-
--   This Project was part of an assignment of Microverse.
--   Our thanks to Microverse and all our peers and colleagues there.
 
 ## 📝 License
 

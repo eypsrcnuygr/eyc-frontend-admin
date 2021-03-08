@@ -56,11 +56,6 @@ Contributions, issues and feature requests are welcome!
 
 Give a ⭐️ if you like this project!
 
-## Acknowledgments
-
--   This Project was part of an assignment of Microverse.
--   Our thanks to Microverse and all our peers and colleagues there.
-
 ## 📝 License
 
 This project is [MIT](https://github.com/git/git-scm.com/blob/master/MIT-LICENSE.txt) licensed.

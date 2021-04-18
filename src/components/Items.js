@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { logoutAdmin, loginAdmin } from "../actions/index";
 import { connect } from "react-redux";
 import { Widget } from "@uploadcare/react-widget";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImages, faImage } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import NavBar from "./NavBar";
 
@@ -36,7 +38,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const Items = (props) => {
-  const [photo, setImage] = useState(null);
+  const [photo, setImage] = useState([]);
   const [state, setStateFor] = useState({
     name: "",
     details: "",
@@ -118,55 +120,78 @@ const Items = (props) => {
   };
 
   const sendItemToAPI = () => {
-    axios
-      .post(
-        "http://localhost:3001/items",
-        {
-          item: {
-            image: photo,
-            details: state.details,
-            value: state.value,
-            name: state.name,
-            group: state.group,
-            banner_status: state.banner_status
+    const options = {
+      method: "POST",
+      body: photo,
+    };
+
+    fetch("https://api.Cloudinary.com/v1_1/eypsrcnuygr/upload", options)
+      .then((res) => res.json())
+      .then((res) => {
+        axios.post(
+          "http://localhost:3001/items",
+          {
+            item: {
+              image: res.secure_url,
+              details: state.details,
+              value: state.value,
+              name: state.name,
+              group: state.group,
+              banner_status: state.banner_status,
+            },
           },
-        },
-        {
-          headers: {
-            uid: JSON.parse(localStorage.getItem("myAdmin")).myUid,
-            client: JSON.parse(localStorage.getItem("myAdmin")).myClient,
-            "access-token": JSON.parse(localStorage.getItem("myAdmin"))
-              .myAccessToken,
-          },
-        }
-      )
-      .then((response) => {
-        if (response.status === 201) {
-          setMyDiv("Yükleme Başarılı");
-          setTimeout(() => {
-            setMyDiv(null);
-          }, 2000);
-        }
+          {
+            headers: {
+              uid: JSON.parse(localStorage.getItem("myAdmin")).myUid,
+              client: JSON.parse(localStorage.getItem("myAdmin")).myClient,
+              "access-token": JSON.parse(localStorage.getItem("myAdmin"))
+                .myAccessToken,
+            },
+          }
+        );
       })
       .then(() => {
         checkLoginStatus();
         getItems();
+        setImage([]);
       })
-      .catch((error) => {
-        responseVar = error.response.statusText;
-        setTimeout(() => {
-          alert(responseVar);
-        }, 500);
-      });
+      .catch((err) => console.log(err));
   };
 
   const onImageUpload = (event) => {
-    setImage(event.originalUrl);
+    const files = Array.from(event.target.files);
+    const formData = new FormData();
+
+    console.log(files);
+    files.forEach((file) => {
+      formData.append("file", file);
+      formData.append("upload_preset", "goiqmtuj");
+    });
+    
+
+    setImage(formData);
+  };
+
+  const onImageUploadSingle = (event) => {
+    const files = Array.from(event.target.files);
+    const formData = new FormData();
+
+    console.log(files);
+    files.forEach((file) => {
+      formData.append("file", file);
+      formData.append("upload_preset", "goiqmtuj");
+    });
+    
+
+    setImage(formData);
   };
 
   const onInputChange = (event) => {
-    const { name} = event.target;
-    const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+    const { name } = event.target;
+    const value =
+      event.target.type === "checkbox"
+        ? event.target.checked
+        : event.target.value;
     setStateFor((prevState) => ({
       ...prevState,
       [name]: value,
@@ -188,11 +213,11 @@ const Items = (props) => {
         },
       })
       .then(() => getItems())
-      .catch(error => console.log(error));
-  }
+      .catch((error) => console.log(error));
+  };
 
   console.log(state.group);
-
+  let idForImages = -1;
   return (
     <div className="text-center">
       <h1>Ürün Ekle</h1>
@@ -200,58 +225,92 @@ const Items = (props) => {
       <div>
         <b>{myDiv}</b>
       </div>
-      <input
-        className="form-control w-50 mx-auto my-2"
-        onChange={(event) => onInputChange(event)}
-        value={state.name}
-        name="name"
-        type="text"
-        placeholder="Ürünün Adı"
-      />
-      <input
-        className="form-control w-50 mx-auto my-2"
-        onChange={(event) => onInputChange(event)}
-        value={state.details}
-        name="details"
-        type="text"
-        placeholder="Ürünün Detayları"
-      />
-      <input
-        className="form-control w-50 mx-auto my-2"
-        onChange={(event) => onInputChange(event)}
-        value={state.value}
-        name="value"
-        type="Number"
-        placeholder="Ürünün Fiyatı"
-      />
-      <select name="group" id="group" className="form-control w-50 mx-auto" onChange={(event) => onInputChange(event)}>
-        <option value="Organik Müslin Örtüler">Organik Müslin Örtüler</option>
-        <option value="Çift Taraflı Pikeler">Çift Taraflı Pikeler</option>
-        <option value="Örgü Kumaş Pikeler">Örgü Kumaş Pikeler</option>
-        <option value="Müslin Keseler">Müslin Keseler</option>
-        <option value="Triko Battaniyeler">Triko Battaniyeler</option>
-        <option value="Müslin Mendil ve Boyunluk">Müslin Mendil ve Boyunluk</option>
-        <option value="İşlevsel Puset Örtüsü">İşlevsel Puset Örtüsü</option>
-      </select>
-      <Widget
-        publicKey={process.env.REACT_APP_PUBLIC_API_KEY}
-        id="file"
-        role="uploadcare-uploader"
-        onChange={(event) => onImageUpload(event)}
-        locale="tr"
-      />
-       <input type="checkbox" className="form-control mt-3" name="banner_status" onChange={(event) => onInputChange(event)} />
-      <button
-        type="button"
-        className="btn btn-success my-3 w-25 mx-auto"
-        onClick={sendItemToAPI}
-      >
-        Yükle
-      </button>
+      <form onSubmit={(event) => event.preventDefault()}>
+        <input
+          className="form-control w-50 mx-auto my-2"
+          onChange={(event) => onInputChange(event)}
+          value={state.name}
+          name="name"
+          type="text"
+          placeholder="Ürünün Adı"
+        />
+        <input
+          className="form-control w-50 mx-auto my-2"
+          onChange={(event) => onInputChange(event)}
+          value={state.details}
+          name="details"
+          type="text"
+          placeholder="Ürünün Detayları"
+        />
+        <input
+          className="form-control w-50 mx-auto my-2"
+          onChange={(event) => onInputChange(event)}
+          value={state.value}
+          name="value"
+          type="Number"
+          placeholder="Ürünün Fiyatı"
+        />
+        <select
+          name="group"
+          id="group"
+          className="form-control w-50 mx-auto"
+          onChange={(event) => onInputChange(event)}
+        >
+          <option value="Organik Müslin Örtüler">Organik Müslin Örtüler</option>
+          <option value="Çift Taraflı Pikeler">Çift Taraflı Pikeler</option>
+          <option value="Örgü Kumaş Pikeler">Örgü Kumaş Pikeler</option>
+          <option value="Müslin Keseler">Müslin Keseler</option>
+          <option value="Triko Battaniyeler">Triko Battaniyeler</option>
+          <option value="Müslin Mendil ve Boyunluk">
+            Müslin Mendil ve Boyunluk
+          </option>
+          <option value="İşlevsel Puset Örtüsü">İşlevsel Puset Örtüsü</option>
+        </select>
+        <div className="buttons fadein">
+          <div className="button">
+            <label htmlFor="single">
+              <FontAwesomeIcon icon={faImage} color="#3B5998" size="2x" />
+              Tek Foto Eklemek İçin
+            </label>
+            <input
+              type="file"
+              id="single"
+              onChange={(event) => onImageUploadSingle(event)}
+            />
+          </div>
+
+          <div className="button">
+            <label htmlFor="multi">
+              <FontAwesomeIcon icon={faImages} color="#6d84b4" size="2x" />
+              Çoklu Foto Eklemek İçin
+            </label>
+            <input
+              type="file"
+              id="multi"
+              onChange={(event) => onImageUpload(event)}
+              multiple
+            />
+          </div>
+        </div>
+        <input
+          type="checkbox"
+          className="form-control mt-3"
+          name="banner_status"
+          onChange={(event) => onInputChange(event)}
+        />
+        <button
+          type="submit"
+          className="btn btn-success my-3 w-25 mx-auto"
+          onClick={sendItemToAPI}
+        >
+          Yükle
+        </button>
+      </form>
       <div>
         <h3>Yüklü Ürünler</h3>
         {ItemList.filter((myItem) => myItem.name.indexOf(navState) !== -1).map(
           (element) => {
+            console.log(element);
             return (
               <div
                 key={element.id}
@@ -259,11 +318,17 @@ const Items = (props) => {
               >
                 <div className="w-50 mx-auto">
                   <Link to={`items/${element.id}`}>
-                    <img
-                      src={element.image}
-                      alt="item"
-                      className="card-img-top img-fluid"
-                    />
+                    {element.image.map((img) => {
+                      idForImages += 1;
+                      return (
+                        <img
+                          src={img}
+                          key={idForImages}
+                          alt="item"
+                          className="card-img-top img-fluid my-4"
+                        />
+                      );
+                    })}
                   </Link>
                 </div>
                 <div className="card-body">
@@ -272,7 +337,13 @@ const Items = (props) => {
                   <div>{element.value}</div>
                   <div>{element.group}</div>
                 </div>
-                <button type="button" className="btn btn-danger w-50 mx-auto" onClick={() => handleDelete(element.id)}>Ürünü Sil</button>
+                <button
+                  type="button"
+                  className="btn btn-danger w-50 mx-auto"
+                  onClick={() => handleDelete(element.id)}
+                >
+                  Ürünü Sil
+                </button>
               </div>
             );
           }

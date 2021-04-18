@@ -3,7 +3,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { logoutAdmin, loginAdmin } from "../actions/index";
 import { connect } from "react-redux";
-import { Widget } from "@uploadcare/react-widget";
+import { CloudinaryContext, Image } from "cloudinary-react";
+import { fetchPhotos, openUploadWidget } from "../helpers/CloudinaryService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faImages, faImage } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
@@ -119,43 +120,55 @@ const Items = (props) => {
       });
   };
 
-  const sendItemToAPI = () => {
-    const options = {
-      method: "POST",
-      body: photo,
+  const beginUpload = tag => {
+    const uploadOptions = {
+      cloudName: "eypsrcnuygr",
+      tags: [tag, 'anImage'],
+      uploadPreset: "goiqmtuj"
     };
+    const myArr = [];
+    openUploadWidget(uploadOptions, (error, photos) => {
+      if (!error) {
+        console.log(photos);
+        if(photos.event === 'success'){
+          console.log(photos);        
+          myArr.push(photos.info.secure_url)
+          setImage([...photo, ...myArr])
+        }
+      } else {
+        console.log(error);
+      }
+    })
+  }
 
-    fetch("https://api.Cloudinary.com/v1_1/eypsrcnuygr/upload", options)
-      .then((res) => res.json())
-      .then((res) => {
-        axios.post(
-          "http://localhost:3001/items",
-          {
-            item: {
-              image: res.secure_url,
-              details: state.details,
-              value: state.value,
-              name: state.name,
-              group: state.group,
-              banner_status: state.banner_status,
-            },
-          },
-          {
-            headers: {
-              uid: JSON.parse(localStorage.getItem("myAdmin")).myUid,
-              client: JSON.parse(localStorage.getItem("myAdmin")).myClient,
-              "access-token": JSON.parse(localStorage.getItem("myAdmin"))
-                .myAccessToken,
-            },
-          }
-        );
-      })
-      .then(() => {
-        checkLoginStatus();
-        getItems();
-        setImage([]);
-      })
-      .catch((err) => console.log(err));
+  const sendItemToAPI = () => {
+    axios.post(
+      "http://localhost:3001/items",
+      {
+        item: {
+          image: photo,
+          details: state.details,
+          value: state.value,
+          name: state.name,
+          group: state.group,
+          banner_status: state.banner_status,
+        },
+      },
+      {
+        headers: {
+          uid: JSON.parse(localStorage.getItem("myAdmin")).myUid,
+          client: JSON.parse(localStorage.getItem("myAdmin")).myClient,
+          "access-token": JSON.parse(localStorage.getItem("myAdmin"))
+            .myAccessToken,
+        },
+      }
+    )
+  .then(() => {
+    checkLoginStatus();
+    getItems();
+    setImage([]);
+  })
+  .catch((err) => console.log(err));
   };
 
   const onImageUpload = (event) => {
@@ -166,9 +179,10 @@ const Items = (props) => {
     files.forEach((file) => {
       formData.append("file", file);
       formData.append("upload_preset", "goiqmtuj");
+      console.log(file);
     });
     
-
+    console.log(formData);
     setImage(formData);
   };
 
@@ -179,9 +193,8 @@ const Items = (props) => {
     console.log(files);
     files.forEach((file) => {
       formData.append("file", file);
-      formData.append("upload_preset", "goiqmtuj");
     });
-    
+    formData.append("upload_preset", "goiqmtuj");
 
     setImage(formData);
   };
@@ -268,28 +281,16 @@ const Items = (props) => {
         </select>
         <div className="buttons fadein">
           <div className="button">
-            <label htmlFor="single">
-              <FontAwesomeIcon icon={faImage} color="#3B5998" size="2x" />
-              Tek Foto Eklemek İçin
-            </label>
-            <input
-              type="file"
-              id="single"
-              onChange={(event) => onImageUploadSingle(event)}
-            />
-          </div>
-
-          <div className="button">
             <label htmlFor="multi">
               <FontAwesomeIcon icon={faImages} color="#6d84b4" size="2x" />
               Çoklu Foto Eklemek İçin
             </label>
-            <input
-              type="file"
+            <button
+            type="button"
               id="multi"
-              onChange={(event) => onImageUpload(event)}
+              onClick={() => beginUpload('image')}
               multiple
-            />
+            >Fotoğraf yükle</button>
           </div>
         </div>
         <input

@@ -5,12 +5,15 @@ import store from "./store/index";
 import App from "./App";
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
+import { CloudinaryContext } from "cloudinary-react";
 import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <CloudinaryContext cloudName="eypsrcnuygr">
+        <App />
+      </CloudinaryContext>
     </Provider>
   </React.StrictMode>,
   document.getElementById("root")

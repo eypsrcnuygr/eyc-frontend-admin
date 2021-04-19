@@ -1,6 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
 import { Widget } from "@uploadcare/react-widget";
+import { CloudinaryContext, Image } from "cloudinary-react";
+import { fetchPhotos, openUploadWidget } from "../helpers/CloudinaryService";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImages, faImage } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { logoutAdmin, loginAdmin } from "../actions/index";
 import { connect } from "react-redux";
@@ -35,7 +39,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 const Item = (props) => {
-  const [photo, setImage] = useState(null);
+  const [photo, setImage] = useState([]);
   const [state, setState] = useState({
     name: "",
     details: "",
@@ -84,8 +88,9 @@ const Item = (props) => {
       .then((response) => {
         if (response.status === 200) {
           setItem(response.data);
+          setImage(response.data.image);
         }
-      });
+      })
   };
 
   useEffect(() => {
@@ -96,6 +101,27 @@ const Item = (props) => {
   const onImageUpload = (event) => {
     setImage(event.originalUrl);
   };
+
+  const beginUpload = tag => {
+    const uploadOptions = {
+      cloudName: "eypsrcnuygr",
+      tags: [tag, 'anImage'],
+      uploadPreset: "goiqmtuj"
+    };
+    const myArr = [];
+    openUploadWidget(uploadOptions, (error, photos) => {
+      if (!error) {
+        console.log(photos);
+        if(photos.event === 'success'){
+          console.log(photos);        
+          myArr.push(photos.info.secure_url)
+          setImage([...myArr])
+        }
+      } else {
+        console.log(error);
+      }
+    })
+  }
 
   const handleLogOut = () => {
     axios
@@ -166,6 +192,8 @@ const Item = (props) => {
       [name]: value,
     }));
   };
+  let idForImages = -1;
+
   return (
     <div className="text-center">
       <h1>Ürünü değiştir</h1>
@@ -205,13 +233,20 @@ const Item = (props) => {
         <option value="Müslin Mendil ve Boyunluk">Müslin Mendil ve Boyunluk</option>
         <option value="İşlevsel Puset Örtüsü">İşlevsel Puset Örtüsü</option>
       </select>
-      <Widget
-        publicKey={process.env.REACT_APP_PUBLIC_API_KEY}
-        id="file"
-        role="uploadcare-uploader"
-        onChange={(event) => onImageUpload(event)}
-        locale="tr"
-      />
+      <div className="buttons fadein">
+          <div className="button">
+            <label htmlFor="multi">
+              <FontAwesomeIcon icon={faImages} color="#6d84b4" size="2x" />
+              Çoklu Foto Eklemek İçin
+            </label>
+            <button
+            type="button"
+              id="multi"
+              onClick={() => beginUpload('image')}
+              multiple
+            >Fotoğraf yükle</button>
+          </div>
+        </div>
       <button
         type="button"
         className="btn btn-success my-3 w-25 mx-auto"
@@ -221,7 +256,17 @@ const Item = (props) => {
       </button>
       <div className="card w-50 mx-auto p-4 shadow-lg mb-4">
       <div className="w-75 mx-auto">
-        <img src={Item.image} alt="specific-item" className="img-fluid" />
+      {photo.map(img => {
+        idForImages += 1;
+        return (
+          <img
+            src={img}
+            key={idForImages}
+            alt="item"
+            className="card-img-top img-fluid my-4"
+          />
+        );
+      })}
       </div>
       <div>{Item.name}</div>
       <div>{Item.details}</div>

@@ -1,10 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
-import { Widget } from "@uploadcare/react-widget";
-import { CloudinaryContext, Image } from "cloudinary-react";
-import { fetchPhotos, openUploadWidget } from "../helpers/CloudinaryService";
+import { openUploadWidget } from "../helpers/CloudinaryService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImages, faImage } from "@fortawesome/free-solid-svg-icons";
+import { faImages } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
 import { logoutAdmin, loginAdmin } from "../actions/index";
 import { connect } from "react-redux";
@@ -45,6 +43,9 @@ const Item = (props) => {
     details: "",
     value: 0,
     group: 'Organik Müslin Örtüler',
+    stock_amount: 0,
+    first_value: 0,
+    cargo_price: 0,
   });
   const [myDiv, setMyDiv] = useState(null);
   const [Item, setItem] = useState([]);
@@ -98,10 +99,6 @@ const Item = (props) => {
     checkLoginStatus();
   }, []);
 
-  const onImageUpload = (event) => {
-    setImage(event.originalUrl);
-  };
-
   const beginUpload = tag => {
     const uploadOptions = {
       cloudName: "eypsrcnuygr",
@@ -153,7 +150,11 @@ const Item = (props) => {
             details: state.details,
             value: state.value,
             name: state.name,
-            group: state.group
+            group: state.group,
+            stock_amount: state.stock_amount,
+            first_value: state.first_value,
+            discount_percentage: state.first_value !== 0 ? (Math.ceil(state.first_value - state.value) * 100 / state.first_value) : 0,
+            cargo_price: state.cargo_price,
           },
         },
         {
@@ -216,6 +217,7 @@ const Item = (props) => {
         type="text"
         placeholder="Ürünün Detayları"
       />
+      <p>Satış Fiyatı</p>
       <input
         className="form-control w-50 mx-auto my-2"
         onChange={(event) => onInputChange(event)}
@@ -223,6 +225,33 @@ const Item = (props) => {
         name="value"
         type="Number"
         placeholder="Ürünün Fiyatı"
+      />
+       <p>İlk Fiyat</p>
+         <input
+          className="form-control w-50 mx-auto my-2"
+          onChange={(event) => onInputChange(event)}
+          value={state.first_value}
+          name="first_value"
+          type="Number"
+          placeholder="İlk Fiyat"
+        />
+      <p>Stok Adedi</p>
+      <input
+        className="form-control w-50 mx-auto my-2"
+        onChange={(event) => onInputChange(event)}
+        value={state.stock_amount}
+        name="stock_amount"
+        type="Number"
+        placeholder="Stok Adedi"
+      />
+      <p>Kargo Ücreti</p>
+      <input
+        className="form-control w-50 mx-auto my-2"
+        onChange={(event) => onInputChange(event)}
+        value={state.cargo_price}
+        name="cargo_price"
+        type="Number"
+        placeholder="Kargo Ücreti"
       />
       <select name="group" id="group" className="form-control w-50 mx-auto" onChange={(event) => onInputChange(event)}>
       <option value="Organik Müslin Örtüler">Organik Müslin Örtüler</option>
@@ -232,6 +261,8 @@ const Item = (props) => {
         <option value="Triko Battaniyeler">Triko Battaniyeler</option>
         <option value="Müslin Mendil ve Boyunluk">Müslin Mendil ve Boyunluk</option>
         <option value="İşlevsel Puset Örtüsü">İşlevsel Puset Örtüsü</option>
+        <option value="Tulum">Tulum</option>
+        <option value="İndirimli Ürünler">İndirimli Ürünler</option>
       </select>
       <div className="buttons fadein">
           <div className="button">
@@ -272,6 +303,9 @@ const Item = (props) => {
       <div>{Item.details}</div>
       <div>{Item.value}</div>
       <div>{Item.group}</div>
+      <div>{Item.stock_amount}</div>
+      <div>{`${Item.discount_percentage} %`}</div>
+      <div>{Item.cargo_price}</div>
       </div>
       
       

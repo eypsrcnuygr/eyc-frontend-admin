@@ -3,10 +3,9 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { logoutAdmin, loginAdmin } from "../actions/index";
 import { connect } from "react-redux";
-import { CloudinaryContext, Image } from "cloudinary-react";
-import { fetchPhotos, openUploadWidget } from "../helpers/CloudinaryService";
+import { openUploadWidget } from "../helpers/CloudinaryService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faImages, faImage } from "@fortawesome/free-solid-svg-icons";
+import { faImages } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import NavBar from "./NavBar";
 
@@ -44,10 +43,12 @@ const Items = (props) => {
     name: "",
     details: "",
     value: 0,
+    stock_amount: 0,
+    first_value: 0,
     group: "Organik Müslin Örtüler",
     banner_status: false,
+    cargo_price: 0,
   });
-  const [myDiv, setMyDiv] = useState(null);
   const [ItemList, setItemList] = useState([]);
   const [navState, setNavState] = useState("");
 
@@ -152,6 +153,10 @@ const Items = (props) => {
           name: state.name,
           group: state.group,
           banner_status: state.banner_status,
+          stock_amount: state.stock_amount,
+          first_value: state.first_value,
+          discount_percentage: state.first_value !== 0 ? (Math.ceil(state.first_value - state.value) * 100 / state.first_value) : 0,
+          cargo_price: state.cargo_price,
         },
       },
       {
@@ -169,34 +174,6 @@ const Items = (props) => {
     setImage([]);
   })
   .catch((err) => console.log(err));
-  };
-
-  const onImageUpload = (event) => {
-    const files = Array.from(event.target.files);
-    const formData = new FormData();
-
-    console.log(files);
-    files.forEach((file) => {
-      formData.append("file", file);
-      formData.append("upload_preset", "goiqmtuj");
-      console.log(file);
-    });
-    
-    console.log(formData);
-    setImage(formData);
-  };
-
-  const onImageUploadSingle = (event) => {
-    const files = Array.from(event.target.files);
-    const formData = new FormData();
-
-    console.log(files);
-    files.forEach((file) => {
-      formData.append("file", file);
-    });
-    formData.append("upload_preset", "goiqmtuj");
-
-    setImage(formData);
   };
 
   const onInputChange = (event) => {
@@ -235,9 +212,6 @@ const Items = (props) => {
     <div className="text-center">
       <h1>Ürün Ekle</h1>
       <NavBar handleChange={handleChange} value={navState} />
-      <div>
-        <b>{myDiv}</b>
-      </div>
       <form onSubmit={(event) => event.preventDefault()}>
         <input
           className="form-control w-50 mx-auto my-2"
@@ -255,6 +229,7 @@ const Items = (props) => {
           type="text"
           placeholder="Ürünün Detayları"
         />
+        <p>Satış Fiyatı</p>
         <input
           className="form-control w-50 mx-auto my-2"
           onChange={(event) => onInputChange(event)}
@@ -262,6 +237,33 @@ const Items = (props) => {
           name="value"
           type="Number"
           placeholder="Ürünün Fiyatı"
+        />
+        <p>İlk Fiyat</p>
+         <input
+          className="form-control w-50 mx-auto my-2"
+          onChange={(event) => onInputChange(event)}
+          value={state.first_value}
+          name="first_value"
+          type="Number"
+          placeholder="İlk Fiyat"
+        />
+        <p>Stok Adedi</p>
+         <input
+          className="form-control w-50 mx-auto my-2"
+          onChange={(event) => onInputChange(event)}
+          value={state.stock_amount}
+          name="stock_amount"
+          type="Number"
+          placeholder="Stok Adedi"
+        />
+        <p>Kargo Ücreti</p>
+         <input
+          className="form-control w-50 mx-auto my-2"
+          onChange={(event) => onInputChange(event)}
+          value={state.cargo_price}
+          name="cargo_price"
+          type="Number"
+          placeholder="Kargo Ücreti"
         />
         <select
           name="group"
@@ -278,6 +280,8 @@ const Items = (props) => {
             Müslin Mendil ve Boyunluk
           </option>
           <option value="İşlevsel Puset Örtüsü">İşlevsel Puset Örtüsü</option>
+          <option value="Tulum">Tulum</option>
+          <option value="İndirimli Ürünler">İndirimli Ürünler</option>
         </select>
         <div className="buttons fadein">
           <div className="button">
@@ -335,8 +339,11 @@ const Items = (props) => {
                 <div className="card-body">
                   <div>{element.name}</div>
                   <div>{element.details}</div>
-                  <div>{element.value}</div>
+                  <div>{`Ürünün satış fiyatı ${element.value} ₺`}</div>
                   <div>{element.group}</div>
+                  <div>{`Stok adedi ${element.stock_amount}`}</div>
+                  <div>{`Üründeki İndirim ${element.discount_percentage} %`}</div>
+                  <div>{`Ürünün kargo fiyatı ${element.cargo_price} ₺`}</div>
                 </div>
                 <button
                   type="button"

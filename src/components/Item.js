@@ -46,6 +46,7 @@ const Item = (props) => {
     stock_amount: 0,
     first_value: 0,
     cargo_price: 0,
+    size: ''
   });
   const [myDiv, setMyDiv] = useState(null);
   const [Item, setItem] = useState([]);
@@ -155,6 +156,7 @@ const Item = (props) => {
             first_value: state.first_value,
             discount_percentage: state.first_value !== 0 ? (Math.ceil(state.first_value - state.value) * 100 / state.first_value) : 0,
             cargo_price: state.cargo_price,
+            size: state.size,
           },
         },
         {
@@ -253,6 +255,16 @@ const Item = (props) => {
         type="Number"
         placeholder="Kargo Ücreti"
       />
+        {state.group === 'Tulum' ? 
+              <input
+              className="form-control w-50 mx-auto my-2"
+              onChange={(event) => onInputChange(event)}
+              value={state.size}
+              name="size"
+              type="text"
+              placeholder="Beden"
+            /> : null
+      }
       <select name="group" id="group" className="form-control w-50 mx-auto" onChange={(event) => onInputChange(event)}>
       <option value="Organik Müslin Örtüler">Organik Müslin Örtüler</option>
         <option value="Çift Taraflı Pikeler">Çift Taraflı Pikeler</option>

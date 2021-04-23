@@ -48,6 +48,7 @@ const Items = (props) => {
     group: "Organik Müslin Örtüler",
     banner_status: false,
     cargo_price: 0,
+    size: ''
   });
   const [ItemList, setItemList] = useState([]);
   const [navState, setNavState] = useState("");
@@ -157,6 +158,7 @@ const Items = (props) => {
           first_value: state.first_value,
           discount_percentage: state.first_value !== 0 ? (Math.ceil(state.first_value - state.value) * 100 / state.first_value) : 0,
           cargo_price: state.cargo_price,
+          size: state.size
         },
       },
       {
@@ -265,6 +267,16 @@ const Items = (props) => {
           type="Number"
           placeholder="Kargo Ücreti"
         />
+        {state.group === 'Tulum' ? 
+              <input
+              className="form-control w-50 mx-auto my-2"
+              onChange={(event) => onInputChange(event)}
+              value={state.size}
+              name="size"
+              type="text"
+              placeholder="Beden"
+            /> : null
+      }
         <select
           name="group"
           id="group"

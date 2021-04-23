@@ -318,6 +318,7 @@ const Item = (props) => {
       <div>{Item.stock_amount}</div>
       <div>{`${Item.discount_percentage} %`}</div>
       <div>{Item.cargo_price}</div>
+      <div>{Item.size}</div>
       </div>
       
       

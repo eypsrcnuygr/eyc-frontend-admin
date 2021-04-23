@@ -356,6 +356,7 @@ const Items = (props) => {
                   <div>{`Stok adedi ${element.stock_amount}`}</div>
                   <div>{`Üründeki İndirim ${element.discount_percentage} %`}</div>
                   <div>{`Ürünün kargo fiyatı ${element.cargo_price} ₺`}</div>
+                  <div>{`Beden ${element.size}`}</div>
                 </div>
                 <button
                   type="button"

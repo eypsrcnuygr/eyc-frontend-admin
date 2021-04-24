@@ -46,7 +46,7 @@ const Item = (props) => {
     stock_amount: 0,
     first_value: 0,
     cargo_price: 0,
-    size: ''
+    size: [],
   });
   const [myDiv, setMyDiv] = useState(null);
   const [Item, setItem] = useState([]);
@@ -190,6 +190,11 @@ const Item = (props) => {
 
   const onInputChange = (event) => {
     const { name, value } = event.target;
+    name === 'size'
+        ? setState((prevState) => ({
+          ...prevState,
+          [name]: value.split(',')
+        })) :
     setState((prevState) => ({
       ...prevState,
       [name]: value,
@@ -318,7 +323,7 @@ const Item = (props) => {
       <div>{Item.stock_amount}</div>
       <div>{`${Item.discount_percentage} %`}</div>
       <div>{Item.cargo_price}</div>
-      <div>{Item.size}</div>
+      <div>{`Beden ${Item.size}`}</div>
       </div>
       
       

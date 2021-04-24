@@ -48,7 +48,7 @@ const Items = (props) => {
     group: "Organik Müslin Örtüler",
     banner_status: false,
     cargo_price: 0,
-    size: ''
+    size: [],
   });
   const [ItemList, setItemList] = useState([]);
   const [navState, setNavState] = useState("");
@@ -184,6 +184,11 @@ const Items = (props) => {
       event.target.type === "checkbox"
         ? event.target.checked
         : event.target.value;
+        name === 'size'
+        ? setStateFor((prevState) => ({
+          ...prevState,
+          [name]: value.split(',')
+        })) :
     setStateFor((prevState) => ({
       ...prevState,
       [name]: value,

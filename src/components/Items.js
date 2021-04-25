@@ -57,7 +57,7 @@ const Items = (props) => {
 
   const checkLoginStatus = () => {
     axios
-      .get("http://localhost:3001/v1/auth/validate_token", {
+      .get("https://eyc-api.herokuapp.com/v1/auth/validate_token", {
         headers: {
           uid: JSON.parse(localStorage.getItem("myAdmin")).myUid,
           client: JSON.parse(localStorage.getItem("myAdmin")).myClient,
@@ -82,7 +82,7 @@ const Items = (props) => {
 
   const getItems = () => {
     axios
-      .get("http://localhost:3001/items", {
+      .get("https://eyc-api.herokuapp.com/items", {
         headers: {
           uid: JSON.parse(localStorage.getItem("myAdmin")).myUid,
           client: JSON.parse(localStorage.getItem("myAdmin")).myClient,
@@ -104,7 +104,7 @@ const Items = (props) => {
 
   const handleLogOut = () => {
     axios
-      .delete("http://localhost:3001/v1/auth/sign_out", {
+      .delete("https://eyc-api.herokuapp.com/v1/auth/sign_out", {
         headers: {
           uid: JSON.parse(localStorage.getItem("myAdmin")).myUid,
           client: JSON.parse(localStorage.getItem("myAdmin")).myClient,
@@ -145,7 +145,7 @@ const Items = (props) => {
 
   const sendItemToAPI = () => {
     axios.post(
-      "http://localhost:3001/items",
+      "https://eyc-api.herokuapp.com/items",
       {
         item: {
           image: photo,
@@ -184,11 +184,6 @@ const Items = (props) => {
       event.target.type === "checkbox"
         ? event.target.checked
         : event.target.value;
-        name === 'size'
-        ? setStateFor((prevState) => ({
-          ...prevState,
-          [name]: value.split(',')
-        })) :
     setStateFor((prevState) => ({
       ...prevState,
       [name]: value,
@@ -201,7 +196,7 @@ const Items = (props) => {
 
   const handleDelete = (id) => {
     axios
-      .delete(`http://localhost:3001/items/${id}`, {
+      .delete(`https://eyc-api.herokuapp.com/items/${id}`, {
         headers: {
           uid: JSON.parse(localStorage.getItem("myAdmin")).myUid,
           client: JSON.parse(localStorage.getItem("myAdmin")).myClient,

@@ -48,7 +48,7 @@ const AppForm = props => {
   let responseVar = null;
 
   const handleSubmit = event => {
-    axios.post('http://localhost:3001/v1/auth', {
+    axios.post('https://eyc-api.herokuapp.com/v1/auth', {
       email,
       password,
       password_confirmation,
@@ -84,7 +84,7 @@ const AppForm = props => {
 
 
   const handleSubmitForLogin = event => {
-    axios.post('http://localhost:3001/v1/auth/sign_in', {
+    axios.post('https://eyc-api.herokuapp.com/v1/auth/sign_in', {
       email: emailForLogin,
       password: passwordForLogin,
     }, {

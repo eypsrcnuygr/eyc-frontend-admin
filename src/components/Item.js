@@ -46,7 +46,7 @@ const Item = (props) => {
     stock_amount: 0,
     first_value: 0,
     cargo_price: 0,
-    size: [],
+    size: '',
   });
   const [myDiv, setMyDiv] = useState(null);
   const [Item, setItem] = useState([]);
@@ -54,7 +54,7 @@ const Item = (props) => {
 
   const checkLoginStatus = () => {
     axios
-      .get("http://localhost:3001/v1/auth/validate_token", {
+      .get("https://eyc-api.herokuapp.com/v1/auth/validate_token", {
         headers: {
           uid: JSON.parse(localStorage.getItem("myAdmin")).myUid,
           client: JSON.parse(localStorage.getItem("myAdmin")).myClient,
@@ -79,7 +79,7 @@ const Item = (props) => {
 
   const getItem = () => {
     axios
-      .get(`http://localhost:3001/items/${props.match.params.id}`, {
+      .get(`https://eyc-api.herokuapp.com/items/${props.match.params.id}`, {
         headers: {
           uid: JSON.parse(localStorage.getItem("myAdmin")).myUid,
           client: JSON.parse(localStorage.getItem("myAdmin")).myClient,
@@ -123,7 +123,7 @@ const Item = (props) => {
 
   const handleLogOut = () => {
     axios
-      .delete("http://localhost:3001/v1/auth/sign_out", {
+      .delete("https://eyc-api.herokuapp.com/v1/auth/sign_out", {
         headers: {
           uid: JSON.parse(localStorage.getItem("myAdmin")).myUid,
           client: JSON.parse(localStorage.getItem("myAdmin")).myClient,
@@ -144,7 +144,7 @@ const Item = (props) => {
   const sendItemToAPI = () => {
     axios
       .patch(
-        `http://localhost:3001/items/${props.match.params.id}`,
+        `https://eyc-api.herokuapp.com/items/${props.match.params.id}`,
         {
           item: {
             image: photo,
@@ -190,11 +190,6 @@ const Item = (props) => {
 
   const onInputChange = (event) => {
     const { name, value } = event.target;
-    name === 'size'
-        ? setState((prevState) => ({
-          ...prevState,
-          [name]: value.split(',')
-        })) :
     setState((prevState) => ({
       ...prevState,
       [name]: value,
